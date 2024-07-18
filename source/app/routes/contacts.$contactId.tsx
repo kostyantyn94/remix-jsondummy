@@ -1,14 +1,22 @@
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, useLoaderData, useFetcher } from "@remix-run/react";
-import type { FunctionComponent } from "react";
+import {
+  Form,
+  useLoaderData,
+  useFetcher,
+  Link,
+  Outlet,
+  useNavigate,
+  useParams,
+} from "@remix-run/react";
+import { useEffect, type FunctionComponent } from "react";
 import invariant from "tiny-invariant";
 
 import type { ContactRecord } from "../data";
 
 import { updateContact } from "../data";
 
-import { getContact } from "../newData";
+import { getContact } from "../newData.server";
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   invariant(params.contactId, "Missing contactId param");
@@ -26,61 +34,83 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 export default function Contact() {
   const { contact } = useLoaderData<typeof loader>();
+  const navigate = useNavigate();
+  const params = useParams();
+
+  useEffect(() => {
+    navigate("info", { replace: true });
+  }, [navigate, params.contactId]);
+
   if (!contact) {
     throw new Response("Not Found", { status: 404 });
   }
   return (
-    <div id="contact">
-      <div>
-        <img
-          alt={`${contact.firstName} ${contact.lastName} avatar`}
-          key={contact.image}
-          src={contact.image}
-        />
-      </div>
-
-      <div>
-        <h1>
-          {contact.firstName || contact.lastName ? (
-            <>
-              {contact.firstName} {contact.lastName}
-            </>
-          ) : (
-            <i>No Name</i>
-          )}{" "}
-          <Favorite contact={contact} />
-        </h1>
-
-        {contact.email ? (
-          <p>
-            <a href={`mailto:${contact.twitter}`}>{contact.email}</a>
-          </p>
-        ) : null}
-
-        {contact.university ? <p>{contact.university}</p> : null}
+    <>
+      <div id="contact">
+        <div>
+          <img
+            alt={`${contact.firstName} ${contact.lastName} avatar`}
+            key={contact.image}
+            src={contact.image}
+          />
+        </div>
 
         <div>
-          <Form action="edit">
-            <button type="submit">Edit</button>
-          </Form>
+          <h1>
+            {contact.firstName || contact.lastName ? (
+              <>
+                {contact.firstName} {contact.lastName}
+              </>
+            ) : (
+              <i>No Name</i>
+            )}{" "}
+            <Favorite contact={contact} />
+          </h1>
 
-          <Form
-            action="destroy"
-            method="post"
-            onSubmit={(event) => {
-              const response = confirm(
-                "Please confirm you want to delete this record."
-              );
-              if (!response) {
-                event.preventDefault();
-              }
-            }}
-          >
-            <button type="submit">Delete</button>
-          </Form>
+          {contact.email ? (
+            <p>
+              <a href={`mailto:${contact.twitter}`}>{contact.email}</a>
+            </p>
+          ) : null}
+
+          {contact.university ? <p>{contact.university}</p> : null}
+
+          <div>
+            <Form action="edit">
+              <button type="submit">Edit</button>
+            </Form>
+
+            <Form
+              action="destroy"
+              method="post"
+              onSubmit={(event) => {
+                const response = confirm(
+                  "Please confirm you want to delete this record."
+                );
+                if (!response) {
+                  event.preventDefault();
+                }
+              }}
+            >
+              <button type="submit">Delete</button>
+            </Form>
+          </div>
         </div>
       </div>
-    </div>
+      <nav id="navbar">
+        <ul>
+          <li>
+            <Link to="info">Info</Link>
+          </li>
+          <li>
+            <Link to="posts">Posts</Link>
+          </li>
+        </ul>
+      </nav>
+      <div>
+        <Outlet />
+      </div>
+    </>
   );
 }
 

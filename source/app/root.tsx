@@ -19,7 +19,7 @@ import appStylesHref from "./app.css?url";
 
 import { createEmptyContact } from "./data";
 
-import { getContacts } from "./newData";
+import { getContacts } from "./newData.server";
 
 export const action = async () => {
   const contact = await createEmptyContact();
