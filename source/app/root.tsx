@@ -17,7 +17,7 @@ import {
 
 import appStylesHref from "./app.css?url";
 
-import { createEmptyContact } from "./data";
+import { createEmptyContact } from "./data.server";
 
 import { getContacts } from "./newData.server";
 

@@ -1,11 +1,22 @@
+type Address = {
+  city: string;
+};
+
+type Company = {
+  department: string;
+};
+
 type Contact = {
   id?: string;
   firstName?: string;
   lastName?: string;
   image?: string;
   email?: string;
-  city?: string;
-  department?: string;
+  address?: Address;
+  company?: Company;
+  age?: number;
+  university?: string;
+  favorite?: boolean;
 };
 
 type Post = {
@@ -36,9 +47,10 @@ export async function getContact(id: string): Promise<Contact> {
   return user;
 }
 
-export async function getPosts(): Promise<Post[]> {
-  const res = await fetch(POSTS);
+export async function getPosts(userId: string): Promise<Post[]> {
+  const res = await fetch(`${POSTS}/user/${userId}`);
   const data = await res.json();
+  console.log(data);
   const posts = data.posts;
 
   return posts;

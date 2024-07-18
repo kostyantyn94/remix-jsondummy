@@ -20,8 +20,8 @@ export default function Info() {
       <p>First Name: {contact.firstName}</p>
       <p>Second Name: {contact.lastName}</p>
       <p>Age: {contact.age}</p>
-      <p>City: {contact.address.city}</p>
-      <p>Department: {contact.company.department}</p>
+      <p>City: {contact.address?.city}</p>
+      <p>Department: {contact.company?.department}</p>
     </div>
   );
 }

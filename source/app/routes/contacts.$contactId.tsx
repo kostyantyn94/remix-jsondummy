@@ -12,9 +12,9 @@ import {
 import { useEffect, type FunctionComponent } from "react";
 import invariant from "tiny-invariant";
 
-import type { ContactRecord } from "../data";
+import type { ContactRecord } from "../data.server";
 
-import { updateContact } from "../data";
+import { updateContact } from "../data.server";
 
 import { getContact } from "../newData.server";
 
@@ -69,7 +69,7 @@ export default function Contact() {
 
           {contact.email ? (
             <p>
-              <a href={`mailto:${contact.twitter}`}>{contact.email}</a>
+              <a href={`mailto:${contact.email}`}>{contact.email}</a>
             </p>
           ) : null}
 

@@ -1,9 +1,12 @@
-import { json } from "@remix-run/node";
+import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { getPosts } from "../newData.server";
+import invariant from "tiny-invariant";
 
-export const loader = async () => {
-  const posts = await getPosts();
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  console.log(params);
+  invariant(params.contactId, "Missing contactId param");
+  const posts = await getPosts(params.contactId);
 
   return json({ posts });
 };
